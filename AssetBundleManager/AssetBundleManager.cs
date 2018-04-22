@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using DG.Tweening;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace AssetBundles {
     /// <summary>
@@ -147,7 +148,7 @@ namespace AssetBundles {
             handler = new AssetBundleDownloader(baseUri);
 
             if (Application.isEditor == false) {
-                handler = new StreamingAssetsBundleDownloadDecorator(handler, this.defaultPrioritizationStrategy);
+                handler = new StreamingAssetsBundleDownloadDecorator(handler, defaultPrioritizationStrategy);
             }
 
             handler.Handle(new AssetBundleDownloadCommand {
@@ -276,6 +277,8 @@ namespace AssetBundles {
             }
         }
 
+#if NET_4_6
+
         public async Task<AssetBundle> GetBundle(string bundleName) {
             var completionSource = new TaskCompletionSource<AssetBundle>();
             var onComplete = new Action<AssetBundle>(bundle => completionSource.SetResult(bundle));
@@ -289,6 +292,18 @@ namespace AssetBundles {
             GetBundle(bundleName, onComplete, downloadSettings);
             return await completionSource.Task;
         }
+
+        public async Task<AsyncOperation> LoadLevelAsync(string bundleName, string levelName, LoadSceneMode loadSceneMode) {
+            try {
+                await GetBundle(bundleName);
+                return SceneManager.LoadSceneAsync(levelName, loadSceneMode);
+            } catch {
+                Debug.LogError($"Error while loading the scene {levelName} from {bundleName}");
+                throw;
+            }
+        }
+
+#endif
 
         /// <summary>
         ///     Asynchronously downloads an AssetBundle or returns a cached AssetBundle if it has already been downloaded.
