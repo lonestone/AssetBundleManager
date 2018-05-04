@@ -78,13 +78,13 @@ namespace AssetBundles
             UnityWebRequest req;
             if (cachingDisabled || (cmd.Version <= 0 && cmd.Hash == DEFAULT_HASH)) {
                 Debug.Log(string.Format("GetAssetBundle [{0}].", uri));
-                req = UnityWebRequest.GetAssetBundle(uri);
+                req = UnityWebRequestAssetBundle.GetAssetBundle(uri);
             } else if (cmd.Hash == DEFAULT_HASH) {
                 Debug.Log(string.Format("GetAssetBundle v[{0}] [{1}].", cmd.Version, uri));
-                req = UnityWebRequest.GetAssetBundle(uri, cmd.Version, 0);
+                req = UnityWebRequestAssetBundle.GetAssetBundle(uri, cmd.Version, 0);
             } else {
                 Debug.Log(string.Format("GetAssetBundle [{0}] [{1}].", Caching.IsVersionCached(uri, cmd.Hash) ? "cached" : "uncached", uri));
-                req = UnityWebRequest.GetAssetBundle(uri, cmd.Hash, 0);
+                req = UnityWebRequestAssetBundle.GetAssetBundle(uri, cmd.Hash, 0);
             }
 
 #if UNITY_2017_3_OR_NEWER
