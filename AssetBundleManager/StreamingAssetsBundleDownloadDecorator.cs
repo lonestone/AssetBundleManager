@@ -37,7 +37,13 @@ namespace AssetBundles
 #endif
                 coroutineHandler = AssetBundleDownloaderMonobehaviour.Instance.HandleCoroutine;
 
+#if UNITY_ANDROID
+            fullBundlePath = string.Format("{0}/{1}", Application.dataPath + "!assets/", Utility.GetPlatformName());
+
+#else
             fullBundlePath = string.Format("{0}/{1}", Application.streamingAssetsPath, Utility.GetPlatformName());
+#endif
+            
             var manifestBundle = AssetBundle.LoadFromFile(string.Format("{0}/{1}", fullBundlePath, currentPlatform));
 
             if (manifestBundle == null) {
